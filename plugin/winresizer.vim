@@ -83,9 +83,14 @@ let s:default_keycode = {
              \           'hfull'  : '95',
              \           'vfull'  : '124',
              \           'sizeeq' : '61',
+             \           'split'  : '115',
+             \           'vsplit' : '118',
              \           'close'  : '67',
              \           'tabl'   : '74',
              \           'tabr'   : '75',
+             \           'flast'  : '36',
+             \           'fnext'  : '119',
+             \           'fprev'  : '87',
              \           'finish' : '13',
              \           'cancel' : '113',
              \           'enter'  : '13',
@@ -105,10 +110,16 @@ let g:winresizer_keycode_hfull  = get(g:, 'winresizer_keycode_hfull',  s:default
 let g:winresizer_keycode_vfull  = get(g:, 'winresizer_keycode_vfull',  s:default_keycode['vfull'])
 let g:winresizer_keycode_sizeeq = get(g:, 'winresizer_keycode_sizeeq', s:default_keycode['sizeeq'])
 
+let g:winresizer_keycode_split  = get(g:, 'winresizer_keycode_split',  s:default_keycode['split'])
+let g:winresizer_keycode_vsplit = get(g:, 'winresizer_keycode_vsplit', s:default_keycode['vsplit'])
 let g:winresizer_keycode_close  = get(g:, 'winresizer_keycode_close',  s:default_keycode['close'])
 
 let g:winresizer_keycode_tabl   = get(g:, 'winresizer_keycode_tabl',   s:default_keycode['tabl'])
 let g:winresizer_keycode_tabr   = get(g:, 'winresizer_keycode_tabr',   s:default_keycode['tabr'])
+
+let g:winresizer_keycode_flast  = get(g:, 'winresizer_keycode_flast',  s:default_keycode['flast'])
+let g:winresizer_keycode_fnext  = get(g:, 'winresizer_keycode_fnext',  s:default_keycode['fnext'])
+let g:winresizer_keycode_fprev  = get(g:, 'winresizer_keycode_fprev',  s:default_keycode['fprev'])
 
 let g:winresizer_keycode_finish = get(g:, 'winresizer_keycode_finish', s:default_keycode['finish'])
 let g:winresizer_keycode_cancel = get(g:, 'winresizer_keycode_cancel', s:default_keycode['cancel'])
@@ -127,14 +138,29 @@ let s:codeList = {
         \  'hfull'  : g:winresizer_keycode_hfull,
         \  'vfull'  : g:winresizer_keycode_vfull,
         \  'sizeeq' : g:winresizer_keycode_sizeeq,
+        \  'split'  : g:winresizer_keycode_split,
+        \  'vsplit' : g:winresizer_keycode_vsplit,
         \  'close'  : g:winresizer_keycode_close,
         \  'tabl'   : g:winresizer_keycode_tabl,
         \  'tabr'   : g:winresizer_keycode_tabr,
+        \  'flast'  : g:winresizer_keycode_flast,
+        \  'fnext'  : g:winresizer_keycode_fnext,
+        \  'fprev'  : g:winresizer_keycode_fprev,
         \  'focus'  : g:winresizer_keycode_focus,
         \  'move'   : g:winresizer_keycode_move,
         \  'resize' : g:winresizer_keycode_resize,
         \  'enter'  : g:winresizer_keycode_enter,
         \  'mode'   : g:winresizer_keycode_mode,
+        \  'num0'   : '48',
+        \  'num1'   : '49',
+        \  'num2'   : '50',
+        \  'num3'   : '51',
+        \  'num4'   : '52',
+        \  'num5'   : '53',
+        \  'num6'   : '54',
+        \  'num7'   : '55',
+        \  'num8'   : '56',
+        \  'num9'   : '57',
         \}
 
 exe 'nnoremap ' . g:winresizer_start_key .' :WinResizerStartResize<CR>'
@@ -221,10 +247,24 @@ fun! s:focusCommands()
         \  'hfull'  : 'resize',
         \  'vfull'  : 'vert resize',
         \  'sizeeq' : 'wincmd =',
+        \  'split'  : 'split',
+        \  'vsplit' : 'vsplit',
         \  'close'  : 'call winresizer#winClose()',
         \  'tabl'   : 'call winresizer#tabNext(-1)',
         \  'tabr'   : 'call winresizer#tabNext(+1)',
         \  'cancel' : winrestcmd(),
+        \  'num1'   : '1 wincmd w',
+        \  'num2'   : '2 wincmd w',
+        \  'num3'   : '3 wincmd w',
+        \  'num4'   : '4 wincmd w',
+        \  'num5'   : '5 wincmd w',
+        \  'num6'   : '6 wincmd w',
+        \  'num7'   : '7 wincmd w',
+        \  'num8'   : '8 wincmd w',
+        \  'num9'   : '9 wincmd w',
+        \  'flast'  : '$ wincmd w',
+        \  'fnext'  : 'wincmd w',
+        \  'fprev'  : 'wincmd W',
         \}
 
   return commands
@@ -259,6 +299,10 @@ fun! s:startResize(commands)
       exe l:commands['vfull']
     elseif c == s:codeList['sizeeq'] && exists("l:commands['sizeeq']") "=
       exe l:commands['sizeeq']
+    elseif c == s:codeList['split'] && exists("l:commands['split']") "s
+      exe l:commands['split']
+    elseif c == s:codeList['vsplit'] && exists("l:commands['vsplit']") "v
+      exe l:commands['vsplit']
     elseif c == s:codeList['close'] && exists("l:commands['close']") "C
       exe l:commands['close']
     elseif c == s:codeList['focus'] && getcmdwintype() ==# '' "f
@@ -273,6 +317,32 @@ fun! s:startResize(commands)
       let l:commands = s:tuiResizeCommands()
     elseif c == s:codeList['enter'] && l:commands['mode'] == "focus"
       let l:commands = s:tuiResizeCommands()
+    elseif c == s:codeList['num0'] && exists("l:commands['num0']") "0
+      exe l:commands['num0']
+    elseif c == s:codeList['num1'] && exists("l:commands['num1']") "1
+      exe l:commands['num1']
+    elseif c == s:codeList['num2'] && exists("l:commands['num2']") "2
+      exe l:commands['num2']
+    elseif c == s:codeList['num3'] && exists("l:commands['num3']") "3
+      exe l:commands['num3']
+    elseif c == s:codeList['num4'] && exists("l:commands['num4']") "4
+      exe l:commands['num4']
+    elseif c == s:codeList['num5'] && exists("l:commands['num5']") "5
+      exe l:commands['num5']
+    elseif c == s:codeList['num6'] && exists("l:commands['num6']") "6
+      exe l:commands['num6']
+    elseif c == s:codeList['num7'] && exists("l:commands['num7']") "7
+      exe l:commands['num7']
+    elseif c == s:codeList['num8'] && exists("l:commands['num8']") "8
+      exe l:commands['num8']
+    elseif c == s:codeList['num9'] && exists("l:commands['num9']") "9
+      exe l:commands['num9']
+    elseif c == s:codeList['flast'] && exists("l:commands['flast']") "$
+      exe l:commands['flast']
+    elseif c == s:codeList['fnext'] && exists("l:commands['fnext']") "w
+      exe l:commands['fnext']
+    elseif c == s:codeList['fprev'] && exists("l:commands['fprev']") "W
+      exe l:commands['fprev']
     elseif c == g:winresizer_keycode_cancel "q
       exe l:commands['cancel']
       redraw
